@@ -4,12 +4,11 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CommentController extends AbstractController
 {
     /**
-     * @Route("/comments/{id}/vote/{direction}",name="app_comment_vote")
+     * @Route("/comments/{id}/vote/{direction<up|down>}",name="app_comment_vote", methods="POST")
      */
     public function commentVote($id, $direction)
     {
