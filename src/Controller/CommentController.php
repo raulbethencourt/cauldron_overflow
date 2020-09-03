@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -10,6 +11,10 @@ class CommentController extends AbstractController
 {
     /**
      * @Route("/comments/{id}/vote/{direction<up|down>}",name="app_comment_vote", methods="POST")
+     * @param $id
+     * @param $direction
+     * @param LoggerInterface $logger
+     * @return JsonResponse
      */
     public function commentVote($id, $direction, LoggerInterface $logger)
     {

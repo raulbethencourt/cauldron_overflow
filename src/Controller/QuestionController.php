@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class QuestionController extends AbstractController
@@ -10,7 +11,7 @@ class QuestionController extends AbstractController
     /**
      * @Route("/",name="app_homepage")
      */
-    public function homepage(/*Environment $twig*/)
+    public function homepage(Environment $twig): Response
     {
         /*
         fun example of using the Twig service directly!
@@ -23,13 +24,15 @@ class QuestionController extends AbstractController
 
     /**
      * @Route("/questions/{slug}",name="app_question_show")
+     * @param $slug
+     * @return Response
      */
-    public function show($slug)
+    public function show($slug): Response
     {
         $answers = [
             'Make sure your cat is sitting purrfectly still',
             'Honestly, I like furry shoes better than MY cat',
-            'Maybe... try saying the spell backwrds ?'
+            'Maybe... try saying the spell backwards ?'
         ];
 
         dump($this);

@@ -27,4 +27,3 @@ $container.find('a').on('click', function(e) {
 });
 
 console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
-console.log('test');
