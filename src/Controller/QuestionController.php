@@ -6,6 +6,7 @@ use Knp\Bundle\MarkdownBundle\MarkdownParserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
 use Twig\Environment;
 
 class QuestionController extends AbstractController
@@ -27,23 +28,34 @@ class QuestionController extends AbstractController
     /**
      * @Route("/questions/{slug}",name="app_question_show")
      * @param $slug
-     * @return Response
+     * @param MarkdownParserInterface $parser
+     * @param CacheInterface $cache
+     * @return string
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function show($slug, MarkdownParserInterface $parser): Response
+    public function show($slug, MarkdownParserInterface $parser, CacheInterface $cache): Response
     {
         $answers = [
             'Make sure your cat is sitting `purrfectly` still',
             '**Honestly**, I like furry shoes better than MY cat',
-            'Maybe... try saying the spell _backwards_ ?'
+            'Maybe... try saying the spell _backwards_ ?',
         ];
 
-        $questionText = "I've been turned into a cat, any _thoughts_ on how to turn back? While I'm **adorable**, I don't really care for cat food.";
-        $parsedQuestionText = $parser->transformMarkdown($questionText);
+        $questionText = "I've been **turned** into a cat, any _thoughts_ on how to turn back? 
+        While I'm **adorable**, I don't really care for cat food.";
 
-        return $this->render('question/show.html.twig', [
-            'question' => ucwords(str_replace('-', ' ', $slug)),
-            'questionText' => $parsedQuestionText,
-            'answers' => $answers
-        ]);
+        $parsedQuestionText = $cache->get('markdown_'.md5($questionText),
+            function () use ($questionText, $parser) {
+            return  $parser->transformMarkdown($questionText);
+        });
+
+        return $this->render(
+            'question/show.html.twig',
+            [
+                'question' => ucwords(str_replace('-', ' ', $slug)),
+                'questionText' => $parsedQuestionText,
+                'answers' => $answers,
+            ]
+        );
     }
 }
